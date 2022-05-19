@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Location Based</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+  </head>
+  <body style="margin: 0px; overflow: hidden">
+    <script>
+      AFRAME.registerComponent("locationfinder", {
+        init: function () {
+          navigator.geolocation.getCurrentPosition(function (location) {
+            console.log(location);
+          });
+        },
+      });
+    </script>
+    <a-scene embedded arjs="source: webcam;">
+      <a-camera
+        locationfinder
+        gps-camera="simulateLatitude:-6.175395;simulateLongitude:106.827187;"
+        rotation-reader
+      ></a-camera>
+      <a-text
+        value="Patung Diponegoro"
+        scale="15 15 15"
+        look-at="[gps-camera]"
+        align="center"
+        gps-entity-place="latitude:-6.173794;longitude:106.827260;"
+      ></a-text>
+      <a-text
+        value="Patung Kartini"
+        scale="15 15 15"
+        look-at="[gps-camera]"
+        align="center"
+        gps-entity-place="latitude:-6.175580;longitude:106.829411;"
+      ></a-text>
+
+    </a-scene>
+  </body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual Joystick</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrturck/aframe-joystick/master/joystick.min.js"></script>
+    <style>
+      .button {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <img
+      id="up"
+      src="image/texture.jpeg"
+      alt=""
+      class="button"
+      style="bottom: 120px; left: 120px"
+    />
+    <img
+      id="down"
+      src="image/texture.jpeg"
+      alt=""
+      class="button"
+      style="bottom: 20px; left: 120px"
+    />
+    <img
+      id="left"
+      src="image/texture.jpeg"
+      alt=""
+      class="button"
+      style="bottom: 20px; left: 20px"
+    />
+    <img
+      id="right"
+      src="image/texture.jpeg"
+      alt=""
+      class="button"
+      style="bottom: 20px; left: 220px"
+    />
+    <script>
+      let direction = new THREE.Vector3();
+      let movement = new THREE.Vector3();
+
+      function touchEndListener() {
+        movement = new THREE.Vector3();
+      }
+
+      function clickListener(e) {
+        const scene = document.getElementById("scene");
+        const cam = document.getElementById("cam");
+
+        const position = cam.getAttribute("position");
+        const camDirection = scene.camera.getWorldDirection(direction);
+
+        camDirection.multiplyScalar(0.4);
+
+        if (e.target.id === "up") {
+          movement.x += camDirection.x;
+          movement.z += camDirection.z;
+        } else if (e.target.id === "down") {
+          movement.x -= camDirection.x;
+          movement.z -= camDirection.z;
+        }
+
+        const crossDirection = camDirection.cross(new THREE.Vector3(0, 1, 0));
+
+        if (e.target.id === "left") {
+          movement.x -= crossDirection.x;
+          movement.z -= crossDirection.z;
+        } else if (e.target.id === "right") {
+          movement.x += crossDirection.x;
+          movement.z += crossDirection.z;
+        }
+
+        // cam.setAttribute("position", position);
+      }
+      AFRAME.registerComponent("user-control", {
+        init: function () {
+          const up = document.getElementById("up");
+          const down = document.getElementById("down");
+          const left = document.getElementById("left");
+          const right = document.getElementById("right");
+
+          up.addEventListener("touchstart", clickListener);
+          down.addEventListener("touchstart", clickListener);
+          left.addEventListener("touchstart", clickListener);
+          right.addEventListener("touchstart", clickListener);
+
+          up.addEventListener("touchend", touchEndListener);
+          down.addEventListener("touchend", touchEndListener);
+          left.addEventListener("touchend", touchEndListener);
+          right.addEventListener("touchend", touchEndListener);
+        },
+        tick: function () {
+          if (movement.length() == 0) return;
+
+          const cam = document.getElementById("cam");
+          const position = cam.getAttribute("position");
+
+          position.x += movement.x;
+          position.z += movement.z;
+
+          cam.setAttribute("position", position);
+        },
+      });
+    </script>
+    <a-scene id="scene" user-control joystick vr-mode-ui="enabled: false">
+      <a-entity
+        id="camera"
+        camera
+        look-controls
+        wasd-controls
+        position="0 1.5 3"
+      ></a-entity>
+      <a-box color="red" position="0 1.5 -3"></a-box>
+    </a-scene>
+  </body>
+</html>

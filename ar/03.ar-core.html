@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AR Core</title>
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@master/dist/aframe-master.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/chenzlabs/aframe-ar@master/dist/aframe-ar.min.js"></script>
+  </head>
+  <body>
+    <script>
+      function showMessage(message) {
+        const hud = document.getElementById("hud");
+        hud.setAttribute("value", message);
+      }
+      AFRAME.registerComponent("ar-logic", {
+        init: function () {
+          showMessage("ar-logic running");
+        },
+        tick: function () {
+          const cam = document.getElementById("cam");
+          if (!cam) return;
+          showMessage("Camera detected");
+          const tumbukan = cam.components.raycaster.getIntersection(this.el);
+          if (!tumbukan) return;
+          showMessage("Click to move object");
+          const ring = document.getElementById("ring");
+          ring.setAttribute("position", tumbukan.point);
+        },
+      });
+
+      window.addEventListener("touchstart", function () {
+        const object = document.getElementById("object");
+        const ring = document.getElementById("ring");
+
+        const positionRing = ring.getAttribute("position");
+        const positionBox = object.getAttribute("position");
+
+        const distance = positionBox.distanceTo(positionRing);
+        const positionString = `${positionRing.x.toFixed(
+          2
+        )} ${positionRing.y.toFixed(2)} ${positionRing.z.toFixed(2)}`;
+
+        object.setAttribute(
+          "animation",
+          `property: position; to: ${positionString}; dur: ${distance * 500}`
+        );
+        object.setAttribute("position", position);
+      });
+    </script>
+    <a-scene ar ar-logic>
+      <a-assets>
+        <a-asset-item id="dragon" src="assets/dragon.obj"></a-asset-item>
+      </a-assets>
+      <a-camera id="cam" ar-raycaster raycaster="objects: none;">
+        <a-text
+          id="hud"
+          value="example text"
+          position="0 -0.1 -0.25"
+          align="center"
+          wrap-count="800"
+        ></a-text>
+      </a-camera>
+      <a-ring
+        id="ring"
+        rotation="-90 0 0"
+        radius-inner="0.01"
+        radius-outer="0.02"
+      ></a-ring>
+      <a-obj-model
+        id="object"
+        src="#dragon"
+        scale="0.01 0.01 0.01"
+        position="-2 1 -5"
+        rotation="0 -90 0"
+      ></a-obj-model>
+    </a-scene>
+  </body>
+</html>

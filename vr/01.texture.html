@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Texture</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <img src="image/texture.jpeg" id="base" />
+        <img src="image/texture.jpeg" id="height" />
+      </a-assets>
+      <a-box
+        position="-2 1.5 -2"
+        wireframe="true"
+        color="#000"
+      ></a-box>
+      <a-box
+        position="0 1.5 -2"
+        src="image/normal-map.jpeg"
+        texture-repeat="2 2"
+        color="#550000"
+      ></a-box>
+      <a-box
+        position="0 1.5 -2"
+        normal-map="image/normal-map.jpeg"
+        normal-texture-repeat="2 2"
+        color="#550000"
+      ></a-box>
+      <a-box src="image/texture.jpeg" position="2 1.5 -2" repeat="1 1"></a-box>
+      <a-box
+        src="#base"
+        position="4 1.5 -2"
+        color="#550000"
+        displacement-map="#height"
+        displacement-texture-repeat="2 2"
+        displacement-bias="0"
+        displacement-scale="0.2"
+        segments-height="10"
+        segments-width="10"
+        segments-depth="10"
+        wireframe="true"
+      ></a-box>
+    </a-scene>
+  </body>
+</html>

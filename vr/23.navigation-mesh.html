@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigation Mesh</title>
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.js"></script>
+  </head>
+  <body>
+    <script>
+      AFRAME.registerComponent("nav-pointer", {
+        init: function () {
+          const el = this.el;
+
+          el.addEventListener("click", function (e) {
+            const location = e.detail.intersection.point;
+            const agent = document.querySelector("[nav-agent]");
+            agent.setAttribute("nav-agent", {
+              active: true,
+              destination: location,
+            });
+          });
+
+          el.addEventListener("mouseenter", function (e) {
+            el.setAttribute("material", { color: "green" });
+          });
+
+          el.addEventListener("mouseleave", function (e) {
+            el.setAttribute("material", { color: "red" });
+          });
+
+          el.sceneEl.addEventListener("object3dset", function () {
+            el.components.raycaster.refreshObjects();
+          });
+        },
+      });
+    </script>
+    <a-scene inspector-plugin-recast>
+      <a-entity
+        id="Rig"
+        position="0 0 5"
+        movement-controls="constrainToNavMesh: true;"
+      >
+        <a-entity camera position="0 1.5 5" look-controls>
+          <a-cursor nav-pointer raycaster="objects:[nav-mesh]"></a-cursor>
+        </a-entity>
+      </a-entity>
+
+      <a-gltf-model
+        src="assets/navmesh.gltf"
+        nav-mesh
+        position="0 0.1 0"
+        visible="true"
+      ></a-gltf-model>
+
+      <a-entity id="kereta" nav-agent position="2 0.1 -2">
+        <a-box color="red" position="0 1.5 0"></a-box>
+      </a-entity>
+
+      <a-box color="black" width="20" height="0.2" depth="20"></a-box>
+
+      <a-box width="2" height="5" depth="2" position="0 2.5 -5"></a-box>
+      <a-box width="2" height="5" depth="2" position="-4 2.5 -5"></a-box>
+      <a-box width="2" height="5" depth="2" position="4 2.5 -5"></a-box>
+      <a-box
+        width="2"
+        height="5"
+        depth="2"
+        position="-4 1.5 -5"
+        rotation="90 0 0"
+      ></a-box>
+      <a-box
+        width="2"
+        height="5"
+        depth="2"
+        position="4 2.5 -5"
+        rotation="90 0 0"
+      ></a-box>
+      <a-box width="2" height="5" depth="2" position="-8 2.5 -5"></a-box>
+      <a-box width="2" height="5" depth="2" position="8 2.5 -5"></a-box>
+      <a-box
+        width="2"
+        height="5"
+        depth="2"
+        position="-8 0 -3"
+        rotation="105 0 0"
+      ></a-box>
+      <a-box
+        width="2"
+        height="5"
+        depth="2"
+        position="8 0.5 -3"
+        rotation="120 0 0"
+      ></a-box>
+      <a-box width="2" height="5" depth="2" position="4 2.5 -5"></a-box>
+    </a-scene>
+  </body>
+</html>

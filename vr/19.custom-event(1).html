@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Event</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  </head>
+  <body>
+    <script>
+      AFRAME.registerComponent("example", {
+        init: function () {
+          const el = this.el;
+          el.addEventListener("click", function () {
+            console.log("clicked");
+            el.emit(
+              "example-event",
+              { value: Math.ceil(Math.random() * 10) },
+              true
+            );
+            // const box2 = document.getElementById("box2");
+            // box2.emit("example-event", {}, false);
+          });
+        },
+      });
+      AFRAME.registerComponent("example2", {
+        init: function () {
+          const el = this.el;
+          el.addEventListener("example-event", function (e) {
+            console.log(`Value Random: ${e.detail.value}`);
+          });
+        },
+      });
+    </script>
+    <a-scene example2>
+      <a-camera>
+        <a-cursor raycaster="objects: a-box;"></a-cursor>
+      </a-camera>
+      <a-box example id="box1" color="red" position="0 1.5 -3"></a-box>
+      <a-box id="box2" color="green" position="2 1.5 -3"></a-box>
+    </a-scene>
+  </body>
+</html>

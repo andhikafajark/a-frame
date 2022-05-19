@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keyboard Scripting</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+  </head>
+  <body>
+    <script>
+      AFRAME.registerComponent("keyboard-input", {
+        init: function () {
+          const el = this.el;
+          el.addEventListener("body-loaded", function () {
+            document.addEventListener("keydown", function (e) {
+              const ball = document.querySelector("#red");
+
+              let impulse = new CANNON.Vec3(0, 0, 0);
+              const speed = 10;
+
+              if (e.key === "w") {
+                impulse.z -= speed;
+              }
+              if (e.key === "a") {
+                impulse.x -= speed;
+              }
+              if (e.key === "s") {
+                impulse.z += speed;
+              }
+              if (e.key === "d") {
+                impulse.x += speed;
+              }
+              if (e.code === "Space") {
+                impulse.y += speed;
+              }
+
+              ball.body.applyImpulse(impulse, new CANNON.Vec3(0, 0, 0));
+            });
+          });
+        },
+      });
+    </script>
+    <a-scene id="scene" physics="debug: true;">
+      <a-entity camera position="0 1.5 0">
+        <a-cursor></a-cursor>
+      </a-entity>
+
+      <a-box
+        shadow
+        static-body
+        color="#888"
+        position=".1 0 -3"
+        rotation="-90 0 0"
+        width="10"
+        height="10"
+        depth=".2"
+      ></a-box>
+      <a-sphere
+        keyboard-input
+        id="red"
+        color="red"
+        radius=".2"
+        shadow
+        dynamic-body
+        position="0 1.5 -3"
+      ></a-sphere>
+      <a-box
+        id="green"
+        shadow
+        dynamic-body
+        color="green"
+        position="2 1.5 -5"
+      ></a-box>
+      <a-box
+        id="blue"
+        shadow
+        dynamic-body
+        color="blue"
+        position="-2 1.5 -5"
+      ></a-box>
+    </a-scene>
+  </body>
+</html>

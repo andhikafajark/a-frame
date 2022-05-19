@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Primitive</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <script>
+      AFRAME.registerComponent("box", {
+        schema: {
+          big: { type: "number", default: 1 },
+        },
+        init: function () {
+          const { data } = this;
+          this.geometry = new THREE.BoxGeometry(
+            data.big,
+            data.big,
+            data.big,
+            5,
+            5,
+            5
+          );
+          this.material = new THREE.MeshStandardMaterial({
+            color: 0xffff00,
+            wireframe: true,
+          });
+          this.shape3D = new THREE.Mesh(this.geometry, this.material);
+          this.torusBufferGeometry = new THREE.TorusBufferGeometry(
+            3,
+            0.22,
+            45,
+            45
+          );
+          this.torus3D = new THREE.Mesh(
+            this.torusBufferGeometry,
+            this.material
+          );
+
+          this.group = new THREE.Group();
+          this.group.add(this.shape3D);
+          this.group.add(this.torus3D);
+          this.el.setObject3D("mesh", this.group);
+        },
+        tick: function () {
+          this.torus3D.rotation.y += 0.1;
+        },
+        update: function () {
+
+        },
+        remove: function () {
+          this.el.removeObject3D('mesh')
+        },
+      });
+    </script>
+    <a-scene>
+      <a-entity box position="0 1.5 -3"></a-entity>
+    </a-scene>
+  </body>
+</html>

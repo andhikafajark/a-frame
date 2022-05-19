@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Event</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  </head>
+  <body>
+    <script>
+      AFRAME.registerComponent("display", {
+        schema: {
+          number: {
+            type: "number",
+            default: 1,
+          },
+        },
+        init: function () {
+          const { el, data } = this;
+          el.setAttribute("value", `${data.number}`);
+          el.addEventListener("increment", function (e) {
+            console.log(e.detail.amount);
+            data.number += e.detail.amount;
+            el.setAttribute("value", data.number);
+          });
+        },
+      });
+      AFRAME.registerComponent("counter", {
+        schema: {
+          amount: {
+            type: "number",
+            default: 1,
+          },
+        },
+        init: function () {
+          const { el, data } = this;
+          el.addEventListener("click", function () {
+            const display = document.getElementById("text1");
+            display.emit("increment", { amount: data.amount }, false);
+          });
+        },
+      });
+    </script>
+    <a-scene>
+      <a-camera>
+        <a-cursor raycaster="objects: a-box;"></a-cursor>
+      </a-camera>
+      <a-box
+        counter="amount:-1"
+        id="box1"
+        color="yellow"
+        position="-2 1.5 -3"
+      ></a-box>
+      <a-text
+        display
+        id="text1"
+        value="Example"
+        color="black"
+        position="0 1.5 -3"
+        align="center"
+        width="10"
+      ></a-text>
+      <a-box
+        counter="amount:1"
+        id="box2"
+        color="green"
+        position="2 1.5 -3"
+      ></a-box>
+    </a-scene>
+  </body>
+</html>

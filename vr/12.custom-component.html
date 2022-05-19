@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Component</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <script>
+      AFRAME.registerComponent("hello-aframe", {
+        schema: {
+          log: {
+            type: "string",
+            default: "hello",
+          },
+        },
+        init: function () {
+          const { data, el } = this;
+
+          
+          el.getObject3D("mesh").material.color = new THREE.Color('red');
+          el.addEventListener("click", function (e) {
+            const clickedData = e.srcElement.getAttribute("hello-aframe");
+
+            e.srcElement.setAttribute("hello-aframe", "log:custom");
+          });
+        },
+        update: function (oldData) {
+          console.log("update");
+          console.log(oldData, this.data);
+        },
+        tick: function () {
+          this.el.getObject3D("mesh").rotation.y += 0.01;
+        },
+      });
+    </script>
+    <a-scene>
+      <a-camera>
+        <a-cursor></a-cursor>
+      </a-camera>
+      <a-box
+        hello-aframe="log:a-box1"
+        id="box1"
+        color="red"
+        position="0 1.5 -3"
+      ></a-box>
+      <a-box
+        hello-aframe="log:a-box2"
+        id="box2"
+        color="green"
+        position="2 1.5 -3"
+      ></a-box>
+    </a-scene>
+  </body>
+</html>
